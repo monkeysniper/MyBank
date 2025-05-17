@@ -36,9 +36,15 @@ class MainActivity : AppCompatActivity(), AccountContract.View {
             insets
         }
         presenter = AccountPresenter(this)
+        presenter.loadAccounts()
 
         recyclerView = binding.rv
-        adapter = AccountAdapter()
+        adapter = AccountAdapter(onDELETE = {id->
+            presenter.deleteAccount(id)
+        }, onChange = { account->
+            showEditDialog(account)
+        })
+
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
@@ -77,7 +83,36 @@ class MainActivity : AppCompatActivity(), AccountContract.View {
                 val currency = currencyInput.text.toString()
                 presenter.addAccount(name, balance, currency)
             }
-            .setNeutralButton("Отмена,", null)
+            .setNeutralButton("Отмена", null)
+            .show()
+    }
+
+    private fun showEditDialog(account: Account){
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null)
+        val nameInput = dialogView.findViewById<EditText>(R.id.et_name)
+        val balanceInput = dialogView.findViewById<EditText>(R.id.et_balance)
+        val currencyInput = dialogView.findViewById<EditText>(R.id.et_currency)
+
+        nameInput.setText(account.name)
+        balanceInput.setText(account.balance)
+        currencyInput.setText(account.currency)
+
+        AlertDialog.Builder(this)
+            .setTitle("Редактировать счет ")
+            .setView(dialogView)
+            .setPositiveButton("Обновить") { _, _ ->
+                val name = nameInput.text.toString()
+                val balance = balanceInput.text.toString()
+                val currency = currencyInput.text.toString()
+
+                val updated= account.copy(
+                    name=name,
+                    balance = balance,
+                    currency = currency
+                )
+                presenter.updateAccount(updated.id!!,updated )
+            }
+            .setNeutralButton("Отмена", null)
             .show()
     }
 }

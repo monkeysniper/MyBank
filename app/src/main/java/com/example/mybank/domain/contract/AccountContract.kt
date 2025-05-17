@@ -12,5 +12,7 @@ interface AccountContract {
     interface Presenter{
         fun loadAccounts()
         fun addAccount(name:String,balance:String,currency:String)
+        fun deleteAccount(accountId:String)
+        fun updateAccount(accountId: String,account: Account)
     }
 }

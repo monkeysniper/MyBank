@@ -7,14 +7,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mybank.R
 import com.example.mybank.data.model.Account
 import com.example.mybank.databinding.ItemBinding
+import retrofit2.http.DELETE
 
 
-class AccountAdapter : RecyclerView.Adapter<AccountAdapter.AccountViewHolder>() {
+class AccountAdapter(
+    val onDELETE: (String) -> Unit,
+    val onChange: (Account) -> Unit
+) : RecyclerView.Adapter<AccountAdapter.AccountViewHolder>() {
     inner class AccountViewHolder(private val binding: ItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Account) = with(itemView) {
             binding.tvName.text = item.name
             binding.tvBalance.text = "${item.balance}${item.currency}"
+            binding.btnDelete.setOnClickListener({
+                item.id?.let {
+                    onDELETE(it)
+                }
+            })
+            binding.btnChange.setOnClickListener({
+onChange(item)
+            })
         }
     }
 
