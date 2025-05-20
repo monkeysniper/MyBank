@@ -43,7 +43,12 @@ class MainActivity : AppCompatActivity(), AccountContract.View {
             presenter.deleteAccount(id)
         }, onChange = { account->
             showEditDialog(account)
-        })
+        },
+            onStatusToggle = {id,isChecked->
+                presenter.updateAccountStatus(id,isChecked)
+            }
+        )
+
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter

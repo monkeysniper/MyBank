@@ -2,6 +2,7 @@ package com.example.mybank.domain.presenter
 
 import com.example.mybank.data.api.ApiClient
 import com.example.mybank.data.model.Account
+import com.example.mybank.data.model.PatchAccountStatusDTO
 import com.example.mybank.domain.contract.AccountContract
 import retrofit2.Call
 import retrofit2.Callback
@@ -76,6 +77,24 @@ class AccountPresenter(private val view: AccountContract.View) : AccountContract
                 view.showError("Ошибка сети: ${t.message}")
             }
         })
+    }
+
+    override fun updateAccountStatus(accountId: String, isActive: Boolean) {
+        ApiClient.accountApi.patchAccountsStatus(accountId, PatchAccountStatusDTO(isActive))
+            .enqueue(object : Callback<Account> {
+                override fun onResponse(call: Call<Account>, response: Response<Account>) {
+                    if (response.isSuccessful) {
+                        view.showSuccess("Успешно cтатус счета")
+                        loadAccounts()
+                    } else {
+                        view.showError("Ошибка")
+                    }
+                }
+
+                override fun onFailure(call: Call<Account>, t: Throwable) {
+                    view.showError("Ошибка сети: ${t.message}")
+                }
+            })
     }
 }
 
