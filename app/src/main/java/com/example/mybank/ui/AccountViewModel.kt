@@ -48,15 +48,15 @@ class AccountViewModel : ViewModel() {
         ApiClient.accountApi.createAccount(account).enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
                 if (response.isSuccessful) {
-                    _successMessage.value=("Аккаунт добавлен")
+                    _successMessage.value="Аккаунт добавлен"
                     loadAccounts()
                 } else {
-                    _errorMessage.value=("Ошибка добавление ")
+                    _errorMessage.value="Ошибка добавление "
                 }
             }
 
             override fun onFailure(call: Call<Account>, t: Throwable) {
-                _errorMessage.value=("Ошибка сети: ${t.message}")
+                _errorMessage.value="Ошибка сети: ${t.message}"
             }
         })
     }
@@ -65,15 +65,15 @@ class AccountViewModel : ViewModel() {
         ApiClient.accountApi.deleteAccount(accountId).enqueue(object : Callback<Unit> {
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
                 if (response.isSuccessful) {
-                    _successMessage.value=("Удалено")
+                    _successMessage.value="Удалено"
                     loadAccounts()
                 } else {
-                    _errorMessage.value=("Ошибка удаления")
+                    _errorMessage.value="Ошибка удаления"
                 }
             }
 
             override fun onFailure(call: Call<Unit>, t: Throwable) {
-                _errorMessage.value=("Ошибка сети: ${t.message}")
+                _errorMessage.value="Ошибка сети: ${t.message}"
 
             }
         })
@@ -83,15 +83,15 @@ class AccountViewModel : ViewModel() {
         ApiClient.accountApi.updateAccount(accountId, account).enqueue(object : Callback<Account> {
             override fun onResponse(call: Call<Account>, response: Response<Account>) {
                 if (response.isSuccessful) {
-                    _successMessage.value=("Успешно обновлен")
+                    _successMessage.value="Успешно обновлен"
                     loadAccounts()
                 } else {
-                    _errorMessage.value=("Ошибка")
+                    _errorMessage.value="Ошибка"
                 }
             }
 
             override fun onFailure(call: Call<Account>, t: Throwable) {
-                _errorMessage.value=("Ошибка сети: ${t.message}")
+                _errorMessage.value="Ошибка сети: ${t.message}"
             }
         })
     }
@@ -101,15 +101,15 @@ class AccountViewModel : ViewModel() {
             .enqueue(object : Callback<Account> {
                 override fun onResponse(call: Call<Account>, response: Response<Account>) {
                     if (response.isSuccessful) {
-                        _successMessage.value=("Успешно cтатус счета")
+                        _successMessage.value="Успешно cтатус счета"
                         loadAccounts()
                     } else {
-                        _errorMessage.value=("Ошибка")
+                        _errorMessage.value="Ошибка"
                     }
                 }
 
                 override fun onFailure(call: Call<Account>, t: Throwable) {
-                    _errorMessage.value=("Ошибка сети: ${t.message}")
+                    _errorMessage.value="Ошибка сети: ${t.message}"
                 }
             })
     }
