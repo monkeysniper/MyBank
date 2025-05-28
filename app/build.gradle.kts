@@ -52,6 +52,10 @@ dependencies {
 // Логирование HTTP-запросов
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
-// Дополнительный Material Design (если нужно обновить или явно указать версию)
+// Дополнительный Material Design
     implementation("com.google.android.material:material:1.11.0")
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 }
