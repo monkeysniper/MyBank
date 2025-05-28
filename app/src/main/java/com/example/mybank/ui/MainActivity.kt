@@ -5,23 +5,20 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.mybank.R
 import com.example.mybank.data.model.Account
 import com.example.mybank.databinding.ActivityMainBinding
-import com.example.mybank.databinding.ItemBinding
-import com.example.mybank.domain.contract.AccountContract
-import com.example.mybank.domain.presenter.AccountPresenter
 
-class MainActivity : AppCompatActivity(), AccountContract.View {
+class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-    private lateinit var presenter: AccountContract.Presenter
+    private val viewModel: AccountViewModel by viewModels()
     private lateinit var adapter: AccountAdapter
     private lateinit var recyclerView: RecyclerView
 
@@ -35,17 +32,16 @@ class MainActivity : AppCompatActivity(), AccountContract.View {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        presenter = AccountPresenter(this)
-        presenter.loadAccounts()
+        viewModel.loadAccounts()
 
         recyclerView = binding.rv
-        adapter = AccountAdapter(onDELETE = {id->
-            presenter.deleteAccount(id)
-        }, onChange = { account->
+        adapter = AccountAdapter(onDELETE = { id ->
+            viewModel.deleteAccount(id)
+        }, onChange = { account ->
             showEditDialog(account)
         },
-            onStatusToggle = {id,isChecked->
-                presenter.updateAccountStatus(id,isChecked)
+            onStatusToggle = { id, isChecked ->
+                viewModel.updateAccountStatus(id, isChecked)
             }
         )
 
@@ -56,29 +52,33 @@ class MainActivity : AppCompatActivity(), AccountContract.View {
         binding.btnAdd.setOnClickListener({
             showAddDialog()
         })
-
-
+        //загрузка списка счетов
+        viewModel.loadAccounts()
+        subscribeToLiveData()
     }
 
-    override fun showAccounts(accounts: List<Account>) {
-        adapter.submitList(accounts)
+    private fun subscribeToLiveData() {
+        //подписка на LiveData при изменении списка аккаунтов обновляем ui
+        viewModel.accounts.observe(this) {
+            adapter.submitList(it)
+        }
+        viewModel.successMessage.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+        viewModel.errorMessage.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+
+        }
     }
-
-    override fun showError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun showSuccess(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-
-    }
-
+    // Отображает диалог для добавления нового счёта
+    // Получает данные от пользователя и вызывает метод ViewModel для добавления.
     private fun showAddDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null)
         val nameInput = dialogView.findViewById<EditText>(R.id.et_name)
         val balanceInput = dialogView.findViewById<EditText>(R.id.et_balance)
         val currencyInput = dialogView.findViewById<EditText>(R.id.et_currency)
 
+            //Cоздание и отображение диалог окна
         AlertDialog.Builder(this)
             .setTitle("Добавить счет ")
             .setView(dialogView)
@@ -86,18 +86,18 @@ class MainActivity : AppCompatActivity(), AccountContract.View {
                 val name = nameInput.text.toString()
                 val balance = balanceInput.text.toString()
                 val currency = currencyInput.text.toString()
-                presenter.addAccount(name, balance, currency)
+                viewModel.addAccount(name, balance, currency)
             }
             .setNeutralButton("Отмена", null)
             .show()
     }
 
-    private fun showEditDialog(account: Account){
+    private fun showEditDialog(account: Account) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null)
         val nameInput = dialogView.findViewById<EditText>(R.id.et_name)
         val balanceInput = dialogView.findViewById<EditText>(R.id.et_balance)
         val currencyInput = dialogView.findViewById<EditText>(R.id.et_currency)
-
+//Заполнение текущими данными
         nameInput.setText(account.name)
         balanceInput.setText(account.balance)
         currencyInput.setText(account.currency)
@@ -110,15 +110,14 @@ class MainActivity : AppCompatActivity(), AccountContract.View {
                 val balance = balanceInput.text.toString()
                 val currency = currencyInput.text.toString()
 
-                val updated= account.copy(
-                    name=name,
+                val updated = account.copy(
+                    name = name,
                     balance = balance,
                     currency = currency
                 )
-                presenter.updateAccount(updated.id!!,updated )
+                viewModel.updateAccount(updated.id!!, updated)
             }
             .setNeutralButton("Отмена", null)
             .show()
     }
 }
-
