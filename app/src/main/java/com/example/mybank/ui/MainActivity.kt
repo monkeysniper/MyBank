@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
     // Отображает диалог для добавления нового счёта
     // Получает данные от пользователя и вызывает метод ViewModel для добавления.
     private fun showAddDialog() {
@@ -81,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         val balanceInput = dialogView.findViewById<EditText>(R.id.et_balance)
         val currencyInput = dialogView.findViewById<EditText>(R.id.et_currency)
 
-            //Cоздание и отображение диалог окна
+        //Cоздание и отображение диалог окна
         AlertDialog.Builder(this)
             .setTitle("Добавить счет ")
             .setView(dialogView)

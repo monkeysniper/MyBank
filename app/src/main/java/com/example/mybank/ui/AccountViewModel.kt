@@ -11,6 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
+
 //эта аннотация сообщает что зависимости будут внедряться в viewModel
 @HiltViewModel
 class AccountViewModel @Inject constructor(
