@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mybank.R
 import com.example.mybank.data.model.Account
 import com.example.mybank.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+//внедрение ViewModel с @HiltViewModel
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val viewModel: AccountViewModel by viewModels()
@@ -70,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
     // Отображает диалог для добавления нового счёта
     // Получает данные от пользователя и вызывает метод ViewModel для добавления.
     private fun showAddDialog() {
@@ -78,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         val balanceInput = dialogView.findViewById<EditText>(R.id.et_balance)
         val currencyInput = dialogView.findViewById<EditText>(R.id.et_currency)
 
-            //Cоздание и отображение диалог окна
+        //Cоздание и отображение диалог окна
         AlertDialog.Builder(this)
             .setTitle("Добавить счет ")
             .setView(dialogView)
